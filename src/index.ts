@@ -195,7 +195,8 @@ function loadConfig() {
            process.env[key.trim()] = value;
       }
     }
-  });
+  }
+});
 
   const token = process.env.REGISTRATION_TOKEN || '';
   if (!token || /paste your registration token/i.test(token)) {
