@@ -191,7 +191,8 @@ function loadConfig() {
       const [key, ...valueParts] = line.split('=');
       const value = valueParts.join('=').trim();
       if (key && value) {
-        process.env[key.trim()] = value;
+        if (process.env[key.trim()] === undefined) {
+           process.env[key.trim()] = value;
       }
     }
   });
@@ -203,13 +204,6 @@ function loadConfig() {
 }
 
 loadConfig();
-
-// Refresh Palworld configuration after loading TakaroConfig.txt
-PALWORLD_HOST = process.env.PALWORLD_HOST || '127.0.0.1';
-PALWORLD_PORT = parseInt(process.env.PALWORLD_PORT || '8212', 10);
-PALWORLD_BASE_URL = `http://${PALWORLD_HOST}:${PALWORLD_PORT}`;
-PALWORLD_USERNAME = process.env.PALWORLD_USERNAME || 'admin';
-PALWORLD_PASSWORD = process.env.PALWORLD_PASSWORD || '';
 
 // Create logs directory if it doesn't exist
 const logsDir = path.join(APP_DIR, 'logs');
@@ -298,11 +292,11 @@ const SERVER_NAME = process.env.SERVER_NAME || '';
 const REGISTRATION_TOKEN = process.env.REGISTRATION_TOKEN || '';
 
 // Palworld REST API Configuration
-let PALWORLD_HOST = process.env.PALWORLD_HOST || '127.0.0.1';
-let PALWORLD_PORT = parseInt(process.env.PALWORLD_PORT || '8212', 10);
-let PALWORLD_BASE_URL = `http://${PALWORLD_HOST}:${PALWORLD_PORT}`;
-let PALWORLD_USERNAME = process.env.PALWORLD_USERNAME || 'admin';
-let PALWORLD_PASSWORD = process.env.PALWORLD_PASSWORD || '';
+const PALWORLD_HOST = process.env.PALWORLD_HOST || '127.0.0.1';
+const PALWORLD_PORT = parseInt(process.env.PALWORLD_PORT || '8212', 10);
+const PALWORLD_BASE_URL = `http://${PALWORLD_HOST}:${PALWORLD_PORT}`;
+const PALWORLD_USERNAME = process.env.PALWORLD_USERNAME || 'admin';
+const PALWORLD_PASSWORD = process.env.PALWORLD_PASSWORD || '';
 
 // HTTP Server Configuration (for receiving chat from UE4SS mod)
 const HTTP_PORT = parseInt(process.env.HTTP_PORT || '3001', 10);
