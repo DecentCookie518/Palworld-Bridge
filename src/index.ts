@@ -943,6 +943,9 @@ async function checkServerStatus() {
       {
         headers: {
           Accept: 'application/json',
+          Authorization: `Basic ${Buffer.from(
+            `${PALWORLD_USERNAME}:${PALWORLD_PASSWORD}`
+          ).toString('base64')}`,
         },
         timeout: 5000,
       }
@@ -951,22 +954,23 @@ async function checkServerStatus() {
     const wasRunning = isServerRunning;
     isServerRunning = response.status >= 200 && response.status < 300;
 
+    logger.info(
+      `Remote Palworld REST check: HTTP ${response.status} from ${PALWORLD_BASE_URL} -> ${isServerRunning ? 'ONLINE' : 'OFFLINE'}`
+    );
+
     if (isServerRunning !== wasRunning) {
       logger.info(
         `Palworld server status changed: ${isServerRunning ? 'ONLINE' : 'OFFLINE'} (remote REST API: ${PALWORLD_BASE_URL})`
       );
 
-      // If server just came back online after being offline, clear stale state
       if (isServerRunning && !wasRunning) {
         clearBridgeState();
       }
     }
   } catch (error: any) {
-    if (isServerRunning) {
-      logger.warn(
-        `Remote Palworld REST API is unreachable: ${error?.message || error}`
-      );
-    }
+    logger.warn(
+      `Remote Palworld REST API check failed: HTTP ${error?.response?.status || 'unknown'} - ${error?.message || error}`
+    );
 
     isServerRunning = false;
   }
