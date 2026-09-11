@@ -969,26 +969,7 @@ async function checkServerStatus() {
     isServerRunning = false;
   }
 }
-        -//original//
-    -//const { stdout } = await execPromise('tasklist /FI "IMAGENAME eq PalServer-Win64-Shipping-Cmd.exe" /NH');
-    -//const wasRunning = isServerRunning;
-    // tasklist truncates long names, so check for the truncated version
-    -//isServerRunning = stdout.includes('PalServer-Win64-Shipping');
-
-    -//if (isServerRunning !== wasRunning) {
-      -//logger.info(`Palworld server status changed: ${isServerRunning ? 'ONLINE' : 'OFFLINE'}`);
-
-      // If server just came back online after being offline, clear stale state
-      -//if (isServerRunning && !wasRunning) {
-        -//clearBridgeState();
-      -//}
-    -//}
-  -//} catch (error: any) {
-    -//logger.error(`Failed to check Palworld server process: ${error.message}`);
-    -//isServerRunning = false;
-  -//}
--//}
-
+        
 /**
  * Start periodic server status checks
  */
