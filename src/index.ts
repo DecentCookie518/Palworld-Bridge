@@ -936,13 +936,23 @@ function clearBridgeState() {
 
 async function checkServerStatus() {
   try {
-    const { stdout } = await execPromise('tasklist /FI "IMAGENAME eq PalServer-Win64-Shipping-Cmd.exe" /NH');
+    const response = await axios.get(
+      `${PALWORLD_BASE_URL}/v1/api/info`,
+      {
+        headers: {
+          Accept: 'application/json',
+        },
+        timeout: 5000,
+      }
+    );
+
     const wasRunning = isServerRunning;
-    // tasklist truncates long names, so check for the truncated version
-    isServerRunning = stdout.includes('PalServer-Win64-Shipping');
+    isServerRunning = response.status >= 200 && response.status < 300;
 
     if (isServerRunning !== wasRunning) {
-      logger.info(`Palworld server status changed: ${isServerRunning ? 'ONLINE' : 'OFFLINE'}`);
+      logger.info(
+        `Palworld server status changed: ${isServerRunning ? 'ONLINE' : 'OFFLINE'} (remote REST API: ${PALWORLD_BASE_URL})`
+      );
 
       // If server just came back online after being offline, clear stale state
       if (isServerRunning && !wasRunning) {
@@ -950,10 +960,34 @@ async function checkServerStatus() {
       }
     }
   } catch (error: any) {
-    logger.error(`Failed to check Palworld server process: ${error.message}`);
+    if (isServerRunning) {
+      logger.warn(
+        `Remote Palworld REST API is unreachable: ${error?.message || error}`
+      );
+    }
+
     isServerRunning = false;
   }
 }
+        -//original//
+    -//const { stdout } = await execPromise('tasklist /FI "IMAGENAME eq PalServer-Win64-Shipping-Cmd.exe" /NH');
+    -//const wasRunning = isServerRunning;
+    // tasklist truncates long names, so check for the truncated version
+    -//isServerRunning = stdout.includes('PalServer-Win64-Shipping');
+
+    -//if (isServerRunning !== wasRunning) {
+      -//logger.info(`Palworld server status changed: ${isServerRunning ? 'ONLINE' : 'OFFLINE'}`);
+
+      // If server just came back online after being offline, clear stale state
+      -//if (isServerRunning && !wasRunning) {
+        -//clearBridgeState();
+      -//}
+    -//}
+  -//} catch (error: any) {
+    -//logger.error(`Failed to check Palworld server process: ${error.message}`);
+    -//isServerRunning = false;
+  -//}
+-//}
 
 /**
  * Start periodic server status checks
