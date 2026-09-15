@@ -421,7 +421,6 @@ app.post('/chat', async (req, res) => {
       case 'player_connect':
         logger.info(`[EVENT] Player connected: ${playerName}`);
         if (isConnectedToTakaro) {
-          playerConnectedAt.set(connectedPlayer.gameId, Date.now());
           // Fetch current players to get gameId for the connected player
           const players = await handleGetPlayers();
           const connectedPlayer = players.find((p: any) =>
@@ -1045,6 +1044,7 @@ async function handleGetPlayers(detectChanges: boolean = false) {
         for (const player of mappedPlayers) {
           if (!lastKnownPlayers.has(player.gameId)) {
             logger.info(`[CONNECT DETECTED] Player joined: ${player.name} (gameId: ${player.gameId})`);
+            playerConnectedAt.set(player.gameId, Date.now());
             await sendPlayerEvent('player-connected', player.name, new Date().toISOString(), player.gameId);
           }
         }
@@ -1153,7 +1153,6 @@ async function handleGetServerMetrics() {
 
 // Track active location requests to prevent duplicates
 const activeLocationRequests = new Set<string>();
-
 // Bijhouden wanneer elke speler verbonden is, zodat we geduldiger kunnen
 // zijn met locatie-opvragingen vlak na het joinen (character kan nog spawnen,
 // speler kan nog bezig zijn met character creation)
