@@ -949,7 +949,7 @@ async function checkServerStatus() {
             `${PALWORLD_USERNAME}:${PALWORLD_PASSWORD}`
           ).toString('base64')}`,
         },
-        timeout: 5000,
+        timeout: 15000,
       }
     );
 
