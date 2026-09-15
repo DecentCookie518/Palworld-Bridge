@@ -316,7 +316,7 @@ let serverCheckInterval: NodeJS.Timeout | null = null;
 let reconnectAttempts = 0;
 const MAX_RECONNECT_DELAY = 60000; // 60 seconds
 const BASE_RECONNECT_DELAY = 3000; // 3 seconds
-const SERVER_CHECK_INTERVAL = 5000; // Check server every 5 seconds
+const SERVER_CHECK_INTERVAL = 60000; // Check server every 5 seconds
 
 // Player inventory cache
 interface PlayerInventory {
